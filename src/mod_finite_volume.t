@@ -273,7 +273,7 @@ contains
           else
             ! If angular momentum conserving way to solve the equations,
             ! some fluxes additions need to be treated specifically
-            call phys_angmomfix(fC,x,wnew,ixI^L,ixO^L,idims)
+            call phys_angmomfix(fC,x,wnew,ixI^L,ixO^L,idims,qdt)
           endif
        end if
 
@@ -287,7 +287,7 @@ contains
          call phys_add_source_geom(qdt,ixI^L,ixO^L,wCT,wnew,x)
 
     if(stagger_grid) call phys_face_to_center(ixO^L,snew)
- 
+
     if(phys_solve_eaux) then
       call phys_energy_synchro(ixI^L,ixO^L,wnew,x)
     endif
@@ -660,7 +660,7 @@ contains
 
     select case (typelimiter)
     case (limiter_venk)
-       call venklimiter(ixI^L,ixL^L,idims,dxdim,w,wLp,wRp) 
+       call venklimiter(ixI^L,ixL^L,idims,dxdim,w,wLp,wRp)
     case (limiter_mp5)
        call MP5limiter(ixI^L,ixL^L,idims,w,wLp,wRp)
     case (limiter_weno3)
@@ -702,7 +702,7 @@ contains
           end if
 
           dwC(ixC^S)=w(jxC^S,iw)-w(ixC^S,iw)
-          if(need_global_a2max) then 
+          if(need_global_a2max) then
             a2max=a2max_global(idims)
           else
             select case(idims)
@@ -720,7 +720,7 @@ contains
               call mpistop("idims is wrong in mod_limiter")
             end select
           end if
-            
+
           ! limit flux from left and/or right
           call dwlimiter2(dwC,ixI^L,ixC^L,idims,typelimiter,ldw,rdw,a2max=a2max)
           wLp(ixL^S,iw)=wLp(ixL^S,iw)+half*ldw(ixL^S)

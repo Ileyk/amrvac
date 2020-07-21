@@ -213,10 +213,10 @@ module mod_physics
        integer, intent(in) :: file_handle
      end subroutine sub_write_info
 
-     subroutine sub_angmomfix(fC,x,wnew,ixI^L,ixO^L,idim)
+     subroutine sub_angmomfix(fC,x,wnew,ixI^L,ixO^L,idim,qdt)
        use mod_global_parameters
        integer, intent(in)                :: ixI^L, ixO^L
-       double precision, intent(in)       :: x(ixI^S,1:ndim)
+       double precision, intent(in)       :: x(ixI^S,1:ndim), qdt
        double precision, intent(inout)    :: fC(ixI^S,1:nwflux,1:ndim), wnew(ixI^S,1:nw)
        integer, intent(in)                :: idim
      end subroutine sub_angmomfix
@@ -424,9 +424,9 @@ contains
     call MPI_FILE_WRITE(fh, n_par, 1, MPI_INTEGER, st, er)
   end subroutine dummy_write_info
 
-  subroutine dummy_angmomfix(fC,x,wnew,ixI^L,ixO^L,idim)
+  subroutine dummy_angmomfix(fC,x,wnew,ixI^L,ixO^L,idim, qdt)
     use mod_global_parameters
-    double precision, intent(in)       :: x(ixI^S,1:ndim)
+    double precision, intent(in)       :: x(ixI^S,1:ndim), qdt
     double precision, intent(inout)    :: fC(ixI^S,1:nwflux,1:ndim), wnew(ixI^S,1:nw)
     integer, intent(in)                :: ixI^L, ixO^L
     integer, intent(in)                :: idim
@@ -457,5 +457,5 @@ contains
     integer, intent(in)                :: ixO^L
     type(state)                        :: s
   end subroutine dummy_face_to_center
-  
+
 end module mod_physics

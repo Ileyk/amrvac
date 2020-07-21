@@ -7,7 +7,7 @@ module mod_mf_phys
   !> viscosity coefficient
   double precision, public                :: mf_nu = 1.d0
 
-  !> decay scale of frictional velocity 
+  !> decay scale of frictional velocity
   double precision, public                :: mf_decay_scale = 1.d0
 
   !> Whether GLM-MHD is used
@@ -124,7 +124,7 @@ contains
        read(unitpar, mf_list, end=111)
 111    close(unitpar)
     end do
- 
+
   end subroutine mf_read_params
 
   !> Write this module's parameters to a snapsoht
@@ -145,9 +145,9 @@ contains
     call MPI_FILE_WRITE(fh, names, n_par * name_len, MPI_CHARACTER, st, er)
   end subroutine mf_write_info
 
-  subroutine mf_angmomfix(fC,x,wnew,ixI^L,ixO^L,idim)
+  subroutine mf_angmomfix(fC,x,wnew,ixI^L,ixO^L,idim,qdt)
     use mod_global_parameters
-    double precision, intent(in)       :: x(ixI^S,1:ndim)
+    double precision, intent(in)       :: x(ixI^S,1:ndim),qdt
     double precision, intent(inout)    :: fC(ixI^S,1:nwflux,1:ndim),  wnew(ixI^S,1:nw)
     integer, intent(in)                :: ixI^L, ixO^L
     integer, intent(in)                :: idim
@@ -410,7 +410,7 @@ contains
       case('uct_hll')
         if(.not.allocated(vcts%vbarC)) then
           allocate(vcts%vbarC(ixI^S,1:ndir,2),vcts%vbarLC(ixI^S,1:ndir,2),vcts%vbarRC(ixI^S,1:ndir,2))
-          allocate(vcts%cbarmin(ixI^S,1:ndim),vcts%cbarmax(ixI^S,1:ndim)) 
+          allocate(vcts%cbarmin(ixI^S,1:ndim),vcts%cbarmax(ixI^S,1:ndim))
         end if
         ! Store magnitude of characteristics
         if(present(cmin)) then
@@ -645,7 +645,7 @@ contains
     logical :: buffer
 
     call get_current(w,ixI^L,ixO^L,idirmin,current)
-    ! extrapolate current for the outmost layer, 
+    ! extrapolate current for the outmost layer,
     ! because extrapolation of B at boundaries introduces artificial current
 {
     if(block%is_physical_boundary(2*^D-1)) then
@@ -1985,7 +1985,7 @@ contains
 
     fE=zero
 
-    do idim1=1,ndim 
+    do idim1=1,ndim
       iwdim1 = mag(idim1)
       do idim2=1,ndim
         iwdim2 = mag(idim2)
@@ -2022,7 +2022,7 @@ contains
 
     ! Calculate circulation on each face
 
-    do idim1=1,ndim ! Coordinate perpendicular to face 
+    do idim1=1,ndim ! Coordinate perpendicular to face
       do idim2=1,ndim
         do idir=7-2*ndim,3 ! Direction of line integral
           ! Assemble indices
@@ -2099,7 +2099,7 @@ contains
     ! electric field in the positive idir direction.
     fE=zero
     ! evaluate electric field along cell edges according to equation (41)
-    do idim1=1,ndim 
+    do idim1=1,ndim
       iwdim1 = mag(idim1)
       do idim2=1,ndim
         iwdim2 = mag(idim2)
@@ -2166,7 +2166,7 @@ contains
             ! add current component of electric field at cell edges E=-vxB+eta J
             if(mf_eta/=zero) fE(ixC^S,idir)=fE(ixC^S,idir)+jce(ixC^S,idir)
 
-            ! times time step and edge length 
+            ! times time step and edge length
             fE(ixC^S,idir)=fE(ixC^S,idir)*qdt*s%dsC(ixC^S,idir)
             if (.not.slab) then
               where(abs(x(ixC^S,r_)+half*dxlevel(r_))<1.0d-9)
@@ -2185,7 +2185,7 @@ contains
     circ(ixI^S,1:ndim)=zero
 
     ! Calculate circulation on each face
-    do idim1=1,ndim ! Coordinate perpendicular to face 
+    do idim1=1,ndim ! Coordinate perpendicular to face
       ixCmax^D=ixOmax^D;
       ixCmin^D=ixOmin^D-kr(idim1,^D);
       do idim2=1,ndim
@@ -2299,7 +2299,7 @@ contains
 
       cm(ixC^S,2)=max(cbarmin(jxC^S,idim2),cbarmin(ixC^S,idim2))
       cp(ixC^S,2)=max(cbarmax(jxC^S,idim2),cbarmax(ixC^S,idim2))
-     
+
 
       ! Calculate eletric field
       fE(ixC^S,idir)=-(cp(ixC^S,1)*vtilL(ixC^S,1)*btilL(ixC^S,idim2) &
@@ -2332,7 +2332,7 @@ contains
 
     ! Calculate circulation on each face: interal(fE dot dl)
 
-    do idim1=1,ndim ! Coordinate perpendicular to face 
+    do idim1=1,ndim ! Coordinate perpendicular to face
       ixCmax^D=ixOmax^D;
       ixCmin^D=ixOmin^D-kr(idim1,^D);
       do idim2=1,ndim
@@ -2387,7 +2387,7 @@ contains
     associate(x=>s%x,dx=>s%dx,w=>s%w,wCT=>sCT%w,wCTs=>sCT%ws)
     ! calculate current density at cell edges
     jce=0.d0
-    do idim1=1,ndim 
+    do idim1=1,ndim
       do idim2=1,ndim
         do idir=7-2*ndim,3
           if (lvc(idim1,idim2,idir)==0) cycle

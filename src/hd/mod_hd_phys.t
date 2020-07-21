@@ -107,11 +107,11 @@ contains
   end subroutine hd_write_info
 
   !> Add fluxes in an angular momentum conserving way
-  subroutine hd_angmomfix(fC,x,wnew,ixI^L,ixO^L,idim)
+  subroutine hd_angmomfix(fC,x,wnew,ixI^L,ixO^L,idim,qdt)
     use mod_global_parameters
     use mod_dust, only: dust_n_species, dust_mom
     use mod_geometry
-    double precision, intent(in)       :: x(ixI^S,1:ndim)
+    double precision, intent(in)       :: x(ixI^S,1:ndim), qdt
     double precision, intent(inout)    :: fC(ixI^S,1:nwflux,1:ndim),  wnew(ixI^S,1:nw)
     integer, intent(in)                :: ixI^L, ixO^L
     integer, intent(in)                :: idim
@@ -149,14 +149,15 @@ contains
         &with dust and coordinate=='sperical'")
       do iw=1,nwflux
         if     (idim==r_ .and. (iw==iw_mom(2) .or. iw==iw_mom(phi_))) then
-          fC(kxC^S,iw,idim)= fC(kxC^S,iw,idim)*(x(kxC^S,idim)+half*block%dx(kxC^S,idim))
+          fC(kxC^S,iw,idim)=-qdt*fC(kxC^S,iw,idim)*block%surfaceC(kxC^S,idim)*(x(kxC^S,idim)+half*block%dx(kxC^S,idim))
           wnew(ixO^S,iw)=wnew(ixO^S,iw) + (fC(ixO^S,iw,idim)-fC(hxO^S,iw,idim)) * &
                (inv_volume(ixO^S)/x(ixO^S,idim))
         elseif (idim==2  .and. iw==iw_mom(phi_)) then
-          fC(kxC^S,iw,idim)=fC(kxC^S,iw,idim)*sin(x(kxC^S,idim)+half*block%dx(kxC^S,idim)) ! (x(4,3,1)-x(3,3,1)))
+          fC(kxC^S,iw,idim)=-qdt*fC(kxC^S,iw,idim)*block%surfaceC(kxC^S,idim)*sin(x(kxC^S,idim)+half*block%dx(kxC^S,idim)) ! (x(4,3,1)-x(3,3,1)))
           wnew(ixO^S,iw)=wnew(ixO^S,iw) + (fC(ixO^S,iw,idim)-fC(hxO^S,iw,idim)) * &
                (inv_volume(ixO^S)/sin(x(ixO^S,idim)))
         else
+          fC(ixI^S,iw,idim)=-qdt*fC(ixI^S,iw,idim)*block%surfaceC(ixI^S,idim)
           wnew(ixO^S,iw)=wnew(ixO^S,iw) + (fC(ixO^S,iw,idim)-fC(hxO^S,iw,idim)) * &
                 inv_volume(ixO^S)
         endif
@@ -841,7 +842,7 @@ contains
        h1x^L=ixO^L-kr(1,^D); {^NOONED h2x^L=ixO^L-kr(2,^D);}
        ! s[mr]=((mtheta**2+mphi**2)/rho+2*p)/r
        call hd_get_pthermal(wCT, x, ixI^L, ixO^L, pth)
-       source(ixO^S) = pth(ixO^S) * x(ixO^S, 1) &
+       source(ixO^S) = 2.d0 * pth(ixO^S) * x(ixO^S, 1) &
             *(block%surfaceC(ixO^S, 1) - block%surfaceC(h1x^S, 1)) &
             /block%dvolume(ixO^S)
        if (ndir > 1) then
