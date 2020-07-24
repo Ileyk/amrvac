@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<Object name="VisIt">
+    <Field name="Version" type="string">3.1.2</Field>
+    <Object name="GUI">
+        <Object name="FileServerList">
+            <Field name="path" type="string">/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D_non_in_frame/output</Field>
+            <Field name="filter" type="string">*</Field>
+            <Field name="useCurrentDir" type="bool">true</Field>
+            <Field name="automaticFileGrouping" type="bool">true</Field>
+            <Field name="smartFileGrouping" type="bool">true</Field>
+            <Field name="showDotFiles" type="bool">false</Field>
+            <Object name="recentpaths">
+                <Field name="localhost" type="stringVector">"/Users/ielm" "/Users/ielm/Work" "/Users/ielm/Work/Codes" "/Users/ielm/Work/Codes/amrvac" "/Users/ielm/Work/Codes/amrvac/mysimus" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_25D/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D_in_frame" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D_in_frame/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D_non_in_frame" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D_non_in_frame/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_25D_non_in_frame" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_25D_non_in_frame/output" "/Users/ielm/.atom" </Field>
+            </Object>
+        </Object>
+        <Object name="AppearanceAttributes">
+            <Field name="useSystemDefault" type="bool">true</Field>
+            <Field name="background" type="string">#c0c0c0</Field>
+            <Field name="foreground" type="string">#000000</Field>
+            <Field name="fontName" type="string">Helvetica,12,-1,5,50,0,0,0,0,0</Field>
+            <Field name="style" type="string">macintosh</Field>
+            <Field name="orientation" type="int">0</Field>
+            <Field name="defaultForeground" type="string">#000000</Field>
+            <Field name="defaultBackground" type="string">#ececec</Field>
+            <Field name="defaultFontName" type="string">.AppleSystemUIFont,13,-1,5,50,0,0,0,0,0</Field>
+            <Field name="defaultStyle" type="string">Mac</Field>
+            <Field name="defaultOrientation" type="int">0</Field>
+        </Object>
+        <Field name="postWhenShown" type="bool">false</Field>
+        <Object name="Expressions">
+            <Field name="x" type="int">149</Field>
+            <Field name="y" type="int">278</Field>
+            <Field name="width" type="int">819</Field>
+            <Field name="height" type="int">600</Field>
+            <Field name="visible" type="bool">false</Field>
+            <Field name="posted" type="bool">false</Field>
+        </Object>
+        <Object name="File open">
+            <Field name="x" type="int">149</Field>
+            <Field name="y" type="int">392</Field>
+            <Field name="width" type="int">660</Field>
+            <Field name="height" type="int">486</Field>
+            <Field name="visible" type="bool">false</Field>
+        </Object>
+        <Object name="Information">
+            <Field name="x" type="int">149</Field>
+            <Field name="y" type="int">434</Field>
+            <Field name="width" type="int">503</Field>
+            <Field name="height" type="int">304</Field>
+            <Field name="visible" type="bool">false</Field>
+        </Object>
+        <Object name="View">
+            <Field name="x" type="int">149</Field>
+            <Field name="y" type="int">320</Field>
+            <Field name="width" type="int">456</Field>
+            <Field name="height" type="int">558</Field>
+            <Field name="visible" type="bool">false</Field>
+            <Field name="posted" type="bool">false</Field>
+            <Field name="activeTab" type="int">2</Field>
+        </Object>
+        <Object name="MainWin">
+            <Field name="x" type="int">0</Field>
+            <Field name="y" type="int">0</Field>
+            <Field name="width" type="int">398</Field>
+            <Field name="height" type="int">877</Field>
+            <Field name="SPLITTER_VALUES_V2" type="floatVector">0 1 </Field>
+        </Object>
+        <Object name="Pseudocolor plot attributes">
+            <Field name="x" type="int">55</Field>
+            <Field name="y" type="int">253</Field>
+            <Field name="width" type="int">511</Field>
+            <Field name="height" type="int">508</Field>
+            <Field name="visible" type="bool">true</Field>
+            <Field name="posted" type="bool">false</Field>
+        </Object>
+        <Object name="Vector plot attributes">
+            <Field name="x" type="int">149</Field>
+            <Field name="y" type="int">434</Field>
+            <Field name="width" type="int">592</Field>
+            <Field name="height" type="int">401</Field>
+            <Field name="visible" type="bool">false</Field>
+            <Field name="posted" type="bool">false</Field>
+        </Object>
+        <Object name="IntegralCurve operator attributes">
+            <Field name="x" type="int">149</Field>
+            <Field name="y" type="int">225</Field>
+            <Field name="width" type="int">600</Field>
+            <Field name="height" type="int">653</Field>
+            <Field name="visible" type="bool">false</Field>
+            <Field name="posted" type="bool">false</Field>
+        </Object>
+        <Object name="LCS operator attributes">
+            <Field name="x" type="int">209</Field>
+            <Field name="y" type="int">177</Field>
+            <Field name="width" type="int">683</Field>
+            <Field name="height" type="int">610</Field>
+            <Field name="visible" type="bool">false</Field>
+            <Field name="posted" type="bool">false</Field>
+        </Object>
+        <Object name="Slice operator attributes">
+            <Field name="x" type="int">149</Field>
+            <Field name="y" type="int">415</Field>
+            <Field name="width" type="int">412</Field>
+            <Field name="height" type="int">463</Field>
+            <Field name="visible" type="bool">false</Field>
+            <Field name="posted" type="bool">false</Field>
+        </Object>
+        <Object name="ThreeSlice operator attributes">
+            <Field name="x" type="int">149</Field>
+            <Field name="y" type="int">434</Field>
+            <Field name="width" type="int">378</Field>
+            <Field name="height" type="int">220</Field>
+            <Field name="visible" type="bool">false</Field>
+            <Field name="posted" type="bool">false</Field>
+        </Object>
+        <Field name="plotDatabases" type="stringVector">"localhost:/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D_non_in_frame/output/f50_*.vtu database" </Field>
+        <Object name="TimeFormat">
+            <Field name="displayMode" type="string">Cycles</Field>
+            <Field name="precision" type="int">5</Field>
+        </Object>
+        <Field name="showSelectedFiles" type="bool">false</Field>
+        <Field name="allowFileSelectionChange" type="bool">true</Field>
+        <Field name="enableWarningMessagePopups" type="bool">true</Field>
+    </Object>
+</Object>

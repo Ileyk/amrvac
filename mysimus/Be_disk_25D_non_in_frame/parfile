@@ -3,14 +3,14 @@
  /
 
  &filelist
-        base_filename='./output/f50_'
+        base_filename='./output/spinning_f50_'
         saveprim=F
         autoconvert=T
         convert_type='vtuBCCmpi' ! 'oneblock'
-        nwauxio=5
+        nwauxio=21
         ! convert=T
         ! level_io=1
-        restart_from_file='./output/f50_0000.dat'
+        ! restart_from_file='./output/spinning_f50_0200.dat'
 /
 
  &savelist
@@ -23,7 +23,7 @@
  &stoplist
         dtmin=1.D-14
         time_max=200.d0
-        ! it_max=0
+        it_max=0
  /
 
 
@@ -37,34 +37,26 @@
  /
 
  &boundlist
-        typeboundary_min1 = 4*'special'
+        typeboundary_min1 = 4*'noinflow'
         typeboundary_max1 = 4*'noinflow'
         typeboundary_min2 = 4*'pole'
         typeboundary_max2 = 4*'pole'
-        typeboundary_min3 = 4*'periodic'
-        typeboundary_max3 = 4*'periodic'
  /
 
  &meshlist
-        refine_criterion=0
-        refine_max_level=3
-        itfixgrid=3
+        refine_max_level=1
         stretch_dim(1)='uni'
         stretch_dim(2)='symm'
         nstretchedblocks_baselevel(2)=4
         qstretch_baselevel(2)=1.3d0
-        domain_nx1=48
-        domain_nx2=32
-        domain_nx3=128
+        domain_nx1=96
+        domain_nx2=64
         block_nx1=8
         block_nx2=8
-        block_nx3=8
         xprobmin1=1.1d0
         xprobmax1=10.d0
         xprobmin2=0.d0
         xprobmax2=0.5d0
-        xprobmin3=0.d0
-        xprobmax3=1.d0
         refine_threshold   = 20*0.8d0
         derefine_ratio     = 20*1.d0/2.d0
  /

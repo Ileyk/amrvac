@@ -2,12 +2,12 @@ module mod_usr
   use mod_hd
   implicit none
   double precision :: q, f
-  double precision :: a, Egg, Om0, gm2
+  double precision :: a, Egg, Om0
 
 contains
 
   subroutine usr_init()
-    call set_coordinate_system('spherical_3D')
+    call set_coordinate_system('spherical_2.5D')
 
     usr_set_parameters=> initglobaldata_usr
     usr_init_one_grid => initonegrid_usr
@@ -16,7 +16,6 @@ contains
     usr_special_bc    => specialbound_usr
     usr_aux_output    => specialvar_output
     usr_add_aux_names => specialvarnames_output
-    usr_refine_grid   => specialrefine_grid
 
     call params_read(par_files)
 
@@ -50,8 +49,6 @@ contains
     print*, 'Orb. sep. :', a
     print*, 'Om0 :', Om0
 
-    gm2 = 1.d0/q
-
   end subroutine initglobaldata_usr
 
   subroutine initonegrid_usr(ixG^L,ix^L,w,x)
@@ -61,38 +58,16 @@ contains
     integer, intent(in) :: ixG^L, ix^L
     double precision, intent(in) :: x(ixG^S,1:ndim)
     double precision, intent(inout) :: w(ixG^S,1:nw)
-    integer :: Ncells, i, j, i0
-    double precision, allocatable :: xcells(:,:), wcells(:,:)
 
-    open(1,file='ini_f50.dat')
-    ! skip header
-    read(1,*)
-    read(1,*) Ncells
-    read(1,*)
-    allocate(xcells(Ncells,2),wcells(Ncells,4))
-    do i=1,Ncells
-      read(1,*) xcells(i,1),xcells(i,2),wcells(i,1),wcells(i,2),wcells(i,3),wcells(i,4)
-    enddo
-    close(1)
-
-    do i=ixmin1,ixmax1
-      do j=ixmin2,ixmax2
-        i0=minloc((xcells(:,1)-x(i,j,3,1))**2.d0+(xcells(:,2)-x(i,j,3,2))**2.d0,DIM=1)
-        w(i,j,:,rho_)=wcells(i0,1)
-        w(i,j,:,mom(1))=wcells(i0,2)
-        w(i,j,:,mom(2))=wcells(i0,3)
-        w(i,j,:,mom(3))=wcells(i0,4) ! -w(i,j,:,rho_)*x(i,j,3,1)*dsin(x(i,j,3,2))*Om0
-      enddo
-    enddo
-
-    ! where (w(ix^S,rho_)<small_density)
-    !   w(ix^S,rho_)   =  small_density
-    !   w(ix^S,mom(1)) =  0.d0
-    !   w(ix^S,mom(2)) =  0.d0
-    !   w(ix^S,mom(3)) =  0.d0
-    ! end where
-
-    deallocate(xcells,wcells)
+    w(ix^S,rho_)   =  (x(ix^S,1)*dsin(x(ix^S,2)))**(-3.5d0) * dexp(-(1.d0/hd_adiab)*(1.d0/dsin(x(ix^S,2))-1.d0)/x(ix^S,1))
+    w(ix^S,mom(1)) =  0.d0
+    w(ix^S,mom(2)) =  0.d0
+    where (w(ix^S,rho_)>small_density)
+      w(ix^S,mom(3)) =  w(ix^S,rho_)*dsqrt(1.d0/(x(ix^S,1)*dsin(x(ix^S,2)))-3.5d0*hd_adiab)-w(ix^S,rho_)*x(ix^S,1)*dsin(x(ix^S,2))*Om0
+    elsewhere
+      w(ix^S,rho_)   =  small_density
+      w(ix^S,mom(3)) =  -w(ix^S,rho_)*x(ix^S,1)*dsin(x(ix^S,2))*Om0
+    end where
 
   end subroutine initonegrid_usr
 
@@ -104,14 +79,13 @@ contains
     double precision, intent(inout) :: w(ixI^S,1:nw)
     double precision :: cent_str(ixI^S,1:ndir), cor(ixI^S,1:ndir)
 
-    ! call get_cntfgl_str(ixI^L,ixO^L,x,cent_str)
-    call get_roche_else(ixI^L,ixO^L,x,cent_str)
+    call get_cntfgl_str(ixI^L,ixO^L,x,cent_str)
     call get_coriolis(ixI^L,ixO^L,x,wCT,cor)
     where (wCT(ixO^S,rho_)>10.d0*small_density)
-      w(ixO^S,mom(1)) = w(ixO^S,mom(1)) - qdt * wCT(ixO^S,rho_) / x(ixO^S,1)**2.d0
-      w(ixO^S,mom(1)) = w(ixO^S,mom(1)) + qdt * wCT(ixO^S,rho_) * (cent_str(ixO^S,1)+cor(ixO^S,1))
-      w(ixO^S,mom(2)) = w(ixO^S,mom(2)) + qdt * wCT(ixO^S,rho_) * (cent_str(ixO^S,2)+cor(ixO^S,2))
-      w(ixO^S,mom(3)) = w(ixO^S,mom(3)) + qdt * wCT(ixO^S,rho_) * (cent_str(ixO^S,3)+cor(ixO^S,3))
+      w(ixO^S,mom(1)) = w(ixO^S,mom(1)) - qdt * wCT(ixO^S,rho_)    / x(ixO^S,1)**2.d0
+      w(ixO^S,mom(1)) = w(ixO^S,mom(1)) + qdt * wCT(ixO^S,rho_  ) * (cent_str(ixO^S,1)+cor(ixO^S,1))
+      w(ixO^S,mom(2)) = w(ixO^S,mom(2)) + qdt * wCT(ixO^S,rho_  ) * (cent_str(ixO^S,2)+cor(ixO^S,2))
+      w(ixO^S,mom(3)) = w(ixO^S,mom(3)) + qdt * wCT(ixO^S,rho_  ) * (cent_str(ixO^S,3)+cor(ixO^S,3))
     endwhere
 
   end subroutine pt_grav_source
@@ -122,23 +96,19 @@ contains
     double precision, intent(in) :: dx^D, x(ixG^S,1:ndim)
     double precision, intent(in) :: w(ixG^S,1:nw)
     double precision, intent(inout) :: dtnew
-
     double precision :: force(ixG^S,1:ndir), cent_str(ixG^S,1:ndir), cor(ixG^S,1:ndir)
 
     dtnew=bigdouble
     force=0.d0
     force(ix^S,1)=1.d0/x(ix^S,1)**2.d0
-    ! call get_cntfgl_str(ixG^L,ix^L,x,cent_str)
-    call get_roche_else(ixG^L,ix^L,x,cent_str)
+    call get_cntfgl_str(ixG^L,ix^L,x,cent_str)
     call get_coriolis(ixG^L,ix^L,x,w,cor)
     force(ix^S,1:ndim)=force(ix^S,1:ndim)+cor(ix^S,1:ndim)+cent_str(ix^S,1:ndim)
     ! dtnew=min(dtnew,minval(dsqrt(block%dx(ix^S,1)/(1.d0/x(ix^S,1)**2.d0))))
     dtnew=min(dtnew,minval(dsqrt(block%dx(ix^S,1)/&
       dabs(force(ix^S,1)))),&
                     minval(dsqrt(block%dx(ix^S,1)*block%dx(ix^S,2)/&
-      dabs(force(ix^S,2)))),&
-                    minval(dsqrt(block%dx(ix^S,1)*dsin(block%dx(ix^S,2))*block%dx(ix^S,3)/&
-      dabs(force(ix^S,3)))))
+      dabs(force(ix^S,2)))))
 
   end subroutine get_dt_pt_grav
 
@@ -158,10 +128,10 @@ contains
     w(ixB^S,mom(1)) =  0.d0
     w(ixB^S,mom(2)) =  0.d0
     where (w(ixB^S,rho_)>small_density)
-      w(ixB^S,mom(3)) =  w(ixB^S,rho_)*dsqrt(1.d0/(x(ixB^S,1)*dsin(x(ixB^S,2)))-3.5d0*hd_adiab)
+      w(ixB^S,mom(3)) =  w(ixB^S,rho_)*dsqrt(1.d0/(x(ixB^S,1)*dsin(x(ixB^S,2)))-3.5d0*hd_adiab)-w(ixB^S,rho_)*x(ixB^S,1)*dsin(x(ixB^S,2))*Om0
     elsewhere
       w(ixB^S,rho_)   = small_density
-      w(ixB^S,mom(3)) = 0.d0
+      w(ixB^S,mom(3)) = -w(ixB^S,rho_)*x(ixB^S,1)*dsin(x(ixB^S,2))*Om0
     end where
 
     case(2)
@@ -170,10 +140,10 @@ contains
     w(ixB^S,mom(1)) =  0.d0
     w(ixB^S,mom(2)) =  0.d0
     where (w(ixB^S,rho_)>small_density)
-      w(ixB^S,mom(3)) =  w(ixB^S,rho_)*dsqrt(1.d0/(x(ixB^S,1)*dsin(x(ixB^S,2)))-3.5d0*hd_adiab)
+      w(ixB^S,mom(3)) =  w(ixB^S,rho_)*dsqrt(1.d0/(x(ixB^S,1)*dsin(x(ixB^S,2)))-3.5d0*hd_adiab)-w(ixB^S,rho_)*x(ixB^S,1)*dsin(x(ixB^S,2))*Om0
     elsewhere
       w(ixB^S,rho_)   = small_density
-      w(ixB^S,mom(3)) = 0.d0
+      w(ixB^S,mom(3)) = -w(ixB^S,rho_)*x(ixB^S,1)*dsin(x(ixB^S,2))*Om0
     end where
 
     case default
@@ -181,7 +151,6 @@ contains
     end select
 
   end subroutine specialbound_usr
-
 
   ! -------------------------------------------------------------------------------
   ! Center @ center of masses
@@ -222,99 +191,51 @@ contains
   ! -------------------------------------------------------------------------------
 
   ! -------------------------------------------------------------------------------
-  ! Center @ center of masses
-  ! x axis along line joining 2 bodies, from donor to accretor
-  ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  subroutine get_roche_else(ixI^L,ixO^L,x,F_Roche)
-  use mod_global_parameters
-  integer, intent(in) :: ixI^L, ixO^L
-  double precision, intent(in)  :: x(ixI^S,1:ndim)
-  double precision, intent(out) :: F_Roche(ixI^S,1:ndim)
-  double precision :: xG
-  integer :: i
-  double precision :: RtoB(ixI^S), dr_smooth
-
-  dr_smooth=0.15d0
-
- ! RtoB(ixO^S) = dsqrt( x(ixO^S,1)**2.d0 + a**2.d0 - 2.d0*x(ixO^S,1)*a*dsin(x(ixO^S,2))*dcos(x(ixO^S,3)) + 3.d0*block%dx(ixO^S,1)**2.d0 ) ! (a*(x(3,3,4,3)-x(3,3,3,3)))**2.d0 )
-  RtoB(ixO^S) = dsqrt( x(ixO^S,1)**2.d0 + a**2.d0 - 2.d0*x(ixO^S,1)*a*dsin(x(ixO^S,2))*dcos(x(ixO^S,3)) + 3.d0*dr_smooth**2.d0 )
-
-  ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  ! For centrifugal, w.r.t CM in xG=a*(1/(1+q))
-  xG=a/(1.d0+q)
-
-  F_Roche=0.d0
-  ! grav of secondary + centrifugal
-  F_Roche(ixO^S,1)= &
-  ( - (gm2*(x(ixO^S,1)-a*dsin(x(ixO^S,2))*dcos(x(ixO^S,3)))) / RtoB(ixO^S)**3.d0 &
-  + Om0**2.d0 * (x(ixO^S,1)-xG*dsin(x(ixO^S,2))*dcos(x(ixO^S,3))-x(ixO^S,1)*(dcos(x(ixO^S,2)))**2.d0) )
-  F_Roche(ixO^S,2)= &
-  ( - (gm2*(          -a*dcos(x(ixO^S,2))*dcos(x(ixO^S,3)))) / RtoB(ixO^S)**3.d0 &
-  + Om0**2.d0 * (          -xG*dcos(x(ixO^S,2))*dcos(x(ixO^S,3))+x(ixO^S,1)*dcos(x(ixO^S,2))*dsin(x(ixO^S,2))  ) )
-  F_Roche(ixO^S,3)= &
-  ( - (gm2*(           a                 *dsin(x(ixO^S,3)))) / RtoB(ixO^S)**3.d0 &
-  + Om0**2.d0 * (           xG                 *dsin(x(ixO^S,3))) )
-
-
-  end subroutine get_roche_else
-  ! -------------------------------------------------------------------------------
-
-  ! -------------------------------------------------------------------------------
   subroutine specialvar_output(ixI^L,ixO^L,w,x,normconv)
   integer, intent(in)                :: ixI^L,ixO^L
   double precision, intent(in)       :: x(ixI^S,1:ndim)
   double precision                   :: w(ixI^S,nw+nwauxio)
   double precision                   :: normconv(0:nw+nwauxio)
+  double precision :: cent_str(ixI^S,1:ndir), cor(ixI^S,1:ndir), pthermal(ixI^S), gradP(ixI^S)
 
    w(ixO^S,nw+1) = w(ixO^S,mom(1))/w(ixO^S,rho_)
    w(ixO^S,nw+2) = w(ixO^S,mom(2))/w(ixO^S,rho_)
    w(ixO^S,nw+3) = w(ixO^S,mom(3))/w(ixO^S,rho_)
    w(ixO^S,nw+4) = w(ixO^S,mom(3))/w(ixO^S,rho_)+x(ixO^S,1)*dsin(x(ixO^S,2))*Om0
    w(ixO^S,nw+5) = dsqrt(w(ixO^S,nw+1)**2.d0+w(ixO^S,nw+2)**2.d0+w(ixO^S,nw+3)**2.d0)
-  end subroutine specialvar_output
+   w(ixO^S,nw+6) = - 1.d0 / x(ixO^S,1)**2.d0
+   call get_cntfgl_str(ixI^L,ixO^L,x,cent_str)
+   w(ixO^S,nw+7) = cent_str(ixO^S,1)
+   w(ixO^S,nw+8) = cent_str(ixO^S,2)
+   w(ixO^S,nw+9) = cent_str(ixO^S,3)
+   call get_coriolis(ixI^L,ixO^L,x,w,cor)
+   w(ixO^S,nw+10) = cor(ixO^S,1)
+   w(ixO^S,nw+11) = cor(ixO^S,2)
+   w(ixO^S,nw+12) = cor(ixO^S,3)
+   w(ixO^S,nw+13) = cent_str(ixO^S,1)+cor(ixO^S,1)
+   w(ixO^S,nw+14) = cent_str(ixO^S,2)+cor(ixO^S,2)
+   w(ixO^S,nw+15) = cent_str(ixO^S,3)+cor(ixO^S,3)
+   call hd_get_pthermal(w,x,ixI^L,ixO^L,pthermal)
+   call gradient(pthermal,ixI^L,ixO^L,1,gradP)
+   w(ixO^S,nw+16) = -gradP(ixO^S)/w(ixO^S, rho_)
+   call gradient(pthermal,ixI^L,ixO^L,2,gradP)
+   w(ixO^S,nw+17) = -gradP(ixO^S)/w(ixO^S, rho_)
+   w(ixO^S,nw+18) = ((w(ixO^S, mom(2))**2.d0+w(ixO^S, mom(3))**2.d0) / w(ixO^S, rho_)**2.d0) / x(ixO^S,1)
+   w(ixO^S,nw+19) = w(ixO^S,nw+18) - 1.d0 / x(ixO^S,1)**2.d0 + w(ixO^S,nw+16)
+   w(ixO^S,nw+20) = w(ixO^S,nw+19) + w(ixO^S,nw+13)
+   w(ixO^S,nw+21) = w(ixO^S,nw+18)+cent_str(ixO^S,1)+cor(ixO^S,1)
+   end subroutine specialvar_output
   ! -------------------------------------------------------------------------------
 
   ! -------------------------------------------------------------------------------
   subroutine specialvarnames_output(varnames)
     character(len=*) :: varnames
-    varnames='vr vt vp vp_inertial vmag'
+    varnames='vr vt vp vp_inrtl v'
+    varnames=trim(varnames)//' g ctrr ctrt ctrp crr'
+    varnames=trim(varnames)//' crt crp nninr nnint nninp'
+    varnames=trim(varnames)//' _gdP_r_ovr_rh _gdP_t_ovr_rh'
+    varnames=trim(varnames)//' cnt_gm_r all_bt_nn_in_r all v2nnin'
   end subroutine specialvarnames_output
-  ! -------------------------------------------------------------------------------
-
-  ! -------------------------------------------------------------------------------
-  subroutine specialrefine_grid(igrid,level,ixG^L,ix^L,qt,w,x,refine,coarsen)
-    ! Enforce additional refinement or coarsening
-    ! One can use the coordinate info in x and/or time qt=t_n and w(t_n) values w.
-    ! you must set consistent values for integers refine/coarsen:
-    ! refine = -1 enforce to not refine
-    ! refine =  0 doesn't enforce anything
-    ! refine =  1 enforce refinement
-    ! coarsen = -1 enforce to not coarsen
-    ! coarsen =  0 doesn't enforce anything
-    ! coarsen =  1 enforce coarsen
-    use mod_global_parameters
-    integer, intent(in) :: igrid, level, ixG^L, ix^L
-    double precision, intent(in) :: qt, w(ixG^S,1:nw), x(ixG^S,1:ndim)
-    integer, intent(inout) :: refine, coarsen
-    double precision :: RtoB(ixG^S), xrefine
-    integer :: ixP^L
-
-    ! Set the center of refinement in xrefine,
-    ! a bit ahead of the accretor (orb. sep. minus the accretion radius typically)
-    xrefine=a
-    RtoB(ix^S) = dsqrt( x(ix^S,1)**2.d0 + xrefine**2.d0 - 2.d0*x(ix^S,1)*xrefine*dsin(x(ix^S,2))*dcos(x(ix^S,3)) )
-
-    ixP^L=ix^L+kr(1,^D);
-    ! Force max refinement for grid which contains the point (xrefine,0,0)
-    if (any(RtoB(ix^S)<2.d0*(x(ixP^S,1)-x(ix^S,1)))) then
-      refine = 1
-    endif
-
-    ! Never refine @ poles
-    if (node(pig2_,igrid)<2**level) refine = -1
-
-  end subroutine specialrefine_grid
   ! -------------------------------------------------------------------------------
 
 end module mod_usr
