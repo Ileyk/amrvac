@@ -64,7 +64,13 @@ contains
     integer :: Ncells, i, j, i0
     double precision, allocatable :: xcells(:,:), wcells(:,:)
 
-    open(1,file='ini_f50.dat')
+    if (q==1.d0 .and. f==0.5d0) then
+      open(1,file='ini_f50.dat')
+    elseif(q==1.d0 .and. f==0.1d0) then 
+      open(1,file='ini_f10.dat')
+    else
+      call mpistop('No initial state for this q and f, use the 2.5D setup first')
+    endif
     ! skip header
     read(1,*)
     read(1,*) Ncells

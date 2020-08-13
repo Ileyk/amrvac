@@ -29,8 +29,8 @@
 
  &methodlist
         time_stepper='twostep'
-        flux_scheme=20*'hll'
-        limiter=20*'koren'
+        flux_scheme=20*'tvdlf'
+        limiter=20*'minmod'
         ! angmomfix=.true.
         small_values_method='replace'
         small_density=1.0d-8

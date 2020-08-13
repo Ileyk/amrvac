@@ -10,7 +10,7 @@
             <Field name="smartFileGrouping" type="bool">true</Field>
             <Field name="showDotFiles" type="bool">false</Field>
             <Object name="recentpaths">
-                <Field name="localhost" type="stringVector">"/Users/ielm" "/Users/ielm/Work" "/Users/ielm/Work/Codes" "/Users/ielm/Work/Codes/amrvac" "/Users/ielm/Work/Codes/amrvac/mysimus" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_25D/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D_in_frame" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D_in_frame/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D_non_in_frame" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D_non_in_frame/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_25D_non_in_frame" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_25D_non_in_frame/output" "/Users/ielm/.atom" </Field>
+                <Field name="localhost" type="stringVector">"/Users/ielm" "/Users/ielm/Work" "/Users/ielm/Work/Codes" "/Users/ielm/Work/Codes/amrvac" "/Users/ielm/Work/Codes/amrvac/mysimus" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D_non_in_frame" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D_non_in_frame/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_25D/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D_in_frame" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_3D_in_frame/output" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_25D_non_in_frame" "/Users/ielm/Work/Codes/amrvac/mysimus/Be_disk_25D_non_in_frame/output" "/Users/ielm/.atom" </Field>
             </Object>
         </Object>
         <Object name="AppearanceAttributes">
@@ -26,25 +26,19 @@
             <Field name="defaultStyle" type="string">Mac</Field>
             <Field name="defaultOrientation" type="int">0</Field>
         </Object>
-        <Field name="postWhenShown" type="bool">false</Field>
-        <Object name="Expressions">
+        <Object name="Annotation">
             <Field name="x" type="int">149</Field>
-            <Field name="y" type="int">278</Field>
-            <Field name="width" type="int">819</Field>
-            <Field name="height" type="int">600</Field>
+            <Field name="y" type="int">151</Field>
+            <Field name="width" type="int">577</Field>
+            <Field name="height" type="int">727</Field>
             <Field name="visible" type="bool">false</Field>
             <Field name="posted" type="bool">false</Field>
+            <Field name="activeTab" type="int">0</Field>
         </Object>
-        <Object name="File open">
-            <Field name="x" type="int">149</Field>
-            <Field name="y" type="int">392</Field>
-            <Field name="width" type="int">660</Field>
-            <Field name="height" type="int">486</Field>
-            <Field name="visible" type="bool">false</Field>
-        </Object>
+        <Field name="postWhenShown" type="bool">false</Field>
         <Object name="Information">
             <Field name="x" type="int">149</Field>
-            <Field name="y" type="int">434</Field>
+            <Field name="y" type="int">432</Field>
             <Field name="width" type="int">503</Field>
             <Field name="height" type="int">304</Field>
             <Field name="visible" type="bool">false</Field>
@@ -54,7 +48,7 @@
             <Field name="y" type="int">320</Field>
             <Field name="width" type="int">456</Field>
             <Field name="height" type="int">558</Field>
-            <Field name="visible" type="bool">false</Field>
+            <Field name="visible" type="bool">true</Field>
             <Field name="posted" type="bool">false</Field>
             <Field name="activeTab" type="int">2</Field>
         </Object>
@@ -65,17 +59,25 @@
             <Field name="height" type="int">877</Field>
             <Field name="SPLITTER_VALUES_V2" type="floatVector">0 1 </Field>
         </Object>
+        <Object name="Contour plot attributes">
+            <Field name="x" type="int">149</Field>
+            <Field name="y" type="int">278</Field>
+            <Field name="width" type="int">473</Field>
+            <Field name="height" type="int">600</Field>
+            <Field name="visible" type="bool">false</Field>
+            <Field name="posted" type="bool">false</Field>
+        </Object>
         <Object name="Pseudocolor plot attributes">
             <Field name="x" type="int">55</Field>
-            <Field name="y" type="int">253</Field>
+            <Field name="y" type="int">251</Field>
             <Field name="width" type="int">511</Field>
             <Field name="height" type="int">508</Field>
-            <Field name="visible" type="bool">true</Field>
+            <Field name="visible" type="bool">false</Field>
             <Field name="posted" type="bool">false</Field>
         </Object>
         <Object name="Vector plot attributes">
             <Field name="x" type="int">149</Field>
-            <Field name="y" type="int">434</Field>
+            <Field name="y" type="int">454</Field>
             <Field name="width" type="int">592</Field>
             <Field name="height" type="int">401</Field>
             <Field name="visible" type="bool">false</Field>
@@ -83,7 +85,7 @@
         </Object>
         <Object name="IntegralCurve operator attributes">
             <Field name="x" type="int">149</Field>
-            <Field name="y" type="int">225</Field>
+            <Field name="y" type="int">245</Field>
             <Field name="width" type="int">600</Field>
             <Field name="height" type="int">653</Field>
             <Field name="visible" type="bool">false</Field>
@@ -91,7 +93,7 @@
         </Object>
         <Object name="LCS operator attributes">
             <Field name="x" type="int">209</Field>
-            <Field name="y" type="int">177</Field>
+            <Field name="y" type="int">197</Field>
             <Field name="width" type="int">683</Field>
             <Field name="height" type="int">610</Field>
             <Field name="visible" type="bool">false</Field>
@@ -99,15 +101,23 @@
         </Object>
         <Object name="Slice operator attributes">
             <Field name="x" type="int">149</Field>
-            <Field name="y" type="int">415</Field>
+            <Field name="y" type="int">413</Field>
             <Field name="width" type="int">412</Field>
             <Field name="height" type="int">463</Field>
             <Field name="visible" type="bool">false</Field>
             <Field name="posted" type="bool">false</Field>
         </Object>
-        <Object name="ThreeSlice operator attributes">
+        <Object name="Spherical Slice operator attributes">
             <Field name="x" type="int">149</Field>
             <Field name="y" type="int">434</Field>
+            <Field name="width" type="int">378</Field>
+            <Field name="height" type="int">162</Field>
+            <Field name="visible" type="bool">false</Field>
+            <Field name="posted" type="bool">false</Field>
+        </Object>
+        <Object name="ThreeSlice operator attributes">
+            <Field name="x" type="int">149</Field>
+            <Field name="y" type="int">454</Field>
             <Field name="width" type="int">378</Field>
             <Field name="height" type="int">220</Field>
             <Field name="visible" type="bool">false</Field>
